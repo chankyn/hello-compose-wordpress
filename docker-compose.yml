@@ -1,0 +1,31 @@
+version: "3.0"
+services:
+  rdbm:
+    image: mariadb:10.3.16
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+    volumes:
+      - db:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin:5.0.4
+    ports:
+      - "80:80"
+    environment:
+      PMA_ARBITRARY: 1
+    depends_on:
+      - rdbm
+      
+  wordpress:
+    image: wordpress:php8.0-apache
+    ports:
+      - 8080:80
+    environment:
+      WORDPRESS_DB_HOST: rdbm
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: 1234
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wordpress:/var/www/html
+volumes:
+  db:
+  wordpress:
